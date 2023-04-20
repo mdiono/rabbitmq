@@ -1,0 +1,2 @@
+order-service : https://hub.docker.com/r/mdiono/order
+shipping-service: https://hub.docker.com/r/mdiono/shipping

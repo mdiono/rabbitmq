@@ -1,0 +1,45 @@
+version: '3.2'
+
+services:
+  order:
+    image: mdiono/order:v1
+    working_dir: /app
+    volumes:
+      - ./order-service:/app
+    depends_on:
+      - "rabbitmq"
+    networks:
+      - app-network
+    environment:
+      - AMQP_URL:amqp://guest:guest@rabbitmq:5672
+    links:
+      - rabbitmq
+
+  shipping:
+    image: mdiono/shipping:v1
+    working_dir: /app
+    volumes:
+      - ./shipping-service:/app
+    depends_on:
+      - "rabbitmq"
+    networks:
+      - app-network
+    environment:
+      - AMQP_URL:amqp://guest:guest@rabbitmq:5672
+    links:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
